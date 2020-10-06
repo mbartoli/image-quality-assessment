@@ -5,6 +5,7 @@ import os
 import tempfile
 from flask import Flask, request, jsonify
 import image_quality
+import requests
 from image_quality.evaluater.predict import image_file_to_json, image_dir_to_json, predict, score_images, score_video
 from image_quality.utils.utils import calc_mean_score, save_json
 import urllib
@@ -33,21 +34,33 @@ def predict_images():
   global images
 
   if request.method == 'POST':
-    images = request.json
+    images = request.json.get('images')
     print('images',images)
-
+    keys = {}
     if images:
       temp_dir = tempfile.mkdtemp()
-      for image in images:
+      for image_dict in images:
+        image = image_dict.get('url')
         filename_w_ext = os.path.basename(image)
+        print(type(filename_w_ext))
+        print(f'res:? {filename_w_ext.endswith((".png", ".jpg", ".jpeg"))}')
+        if not filename_w_ext.endswith((".png", ".jpg", ".jpeg")):
+          filename_w_ext = f'{os.path.basename(image)}.jpg'
+        keys[filename_w_ext] = image
         try:
-          urllib.request.urlretrieve(image, os.path.join(temp_dir,filename_w_ext))
-        except:
+          r = requests.get(image)
+          with open(os.path.join(temp_dir,filename_w_ext),'wb') as f:
+            f.write(r.content)
+          #urllib.request.urlretrieve(image, os.path.join(temp_dir,filename_w_ext))
+        except Exception as e:
+          print(e)
           print('An exception occurred :' + image)
         # print('file dest exists?',os.path.exists(os.path.join(temp_dir,filename_w_ext)))
 
 
-      result = score_images(model,temp_dir)
+      result ={'scores': score_images(model,temp_dir)}
+      for x in range(0, len(result.get('scores'))):
+        result['scores'][x]['url'] = keys.get(result['scores'][x]['image_id'])
       shutil.rmtree(temp_dir)
       return jsonify(result)
 
@@ -78,4 +91,4 @@ if __name__ == '__main__':
   args = parser.parse_args()
 
   load_model(args)
-  app.run(host='0.0.0.0', port=5005)
+  app.run(host='0.0.0.0', port=80)

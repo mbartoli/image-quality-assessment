@@ -1,6 +1,7 @@
 # docker run --rm -it -p 5005:5005 nima-http 
 
-WEIGHTS_FILE=/image-quality-assessment/image_quality/models/MobileNet/weights_mobilenet_technical_0.11.hdf5
+#WEIGHTS_FILE=/image-quality-assessment/image_quality/models/MobileNet/weights_mobilenet_technical_0.11.hdf5
+WEIGHTS_FILE=/image-quality-assessment/image_quality/models/MobileNet/weights_mobilenet_aesthetic_0.07.hdf5
 BASE_MODEL_NAME=MobileNet
 DOCKER_IMAGE=nima-http
 

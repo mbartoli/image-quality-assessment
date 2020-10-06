@@ -23,14 +23,14 @@ COPY . /image-quality-assessment/
 
 WORKDIR /image-quality-assessment
 
-RUN make
+RUN pip install -r requirements.txt
 
 WORKDIR /image-quality-assessment/image_quality
 
 ENV PYTHONPATH='/image-quality-assessment/:$PYTHONPATH'
 
-CMD ["/image-quality-assessment/entrypoints/entrypoint.predict.server.sh MobileNet /image-quality-assessment/image_quality/weights.hdf5"]
+CMD ["/image-quality-assessment/entrypoints/entrypoint.predict.server.sh"]
 
 ENTRYPOINT ["/image-quality-assessment/entrypoints/entrypoint.predict.server.sh"]
 
-EXPOSE 5005
+EXPOSE 80
