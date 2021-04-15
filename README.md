@@ -1,3 +1,10 @@
+# Custom for Clay
+
+```
+TAG=`date -u +"%Y%m%d%H%M%S"`
+docker build -t clay/iqa:$TAG -f Dockerfile.server
+```
+
 # Ops
 To build and run docker server: docker_build_server.sh, and docker_run_server.sh
 
