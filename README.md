@@ -10,6 +10,11 @@ curl --request POST \
   --data '{"images": [{"url": "https://assets.clay.earth/api/images/avatars/active/MzAwOTAtNTc3MDQyMjU2"}]}'
 ```
 
+```
+docker tag clay/iqa:$TAG gcr.io/clay-tasks/iqa:$TAG
+docker push gcr.io/clay-tasks/iqa:$TAG
+```
+
 # Ops
 To build and run docker server: docker_build_server.sh, and docker_run_server.sh
 
