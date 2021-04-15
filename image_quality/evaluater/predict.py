@@ -16,6 +16,13 @@ from PIL import ImageFile, Image
 from keras import backend as K
 import videokf as vf
 
+import face_recognition
+import numpy as np
+import tempfile
+import requests
+from PIL import Image
+from io import BytesIO
+
 TOOLS_PATH = '/usr/bin/'
 if platform == 'darwin':
   TOOLS_PATH = '/usr/local/bin/'
@@ -40,7 +47,7 @@ def image_dir_to_json(img_dir, img_type=None):
   samples = []
   for img_path in img_paths:
     img_id = os.path.basename(img_path)
-    samples.append({'image_id': img_id})
+    samples.append({'image_id': img_id, 'image_path': img_path})
   return samples
 
 
@@ -98,6 +105,11 @@ def score_images(model,image_source):
   # calc mean scores and add to samples
   for i, sample in enumerate(samples):
     sample['mean_score_prediction'] = calc_mean_score(predictions[i])
+    print(sample)
+    image = face_recognition.load_image_file(sample.get('image_path'))
+    face_locations = face_recognition.face_locations(image)
+    sample['faces'] = len(face_locations)
+
 
   return samples
 
