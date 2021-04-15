@@ -3,6 +3,11 @@
 ```
 TAG=`date -u +"%Y%m%d%H%M%S"`
 docker build -t clay/iqa:$TAG -f Dockerfile.server
+docker run -it -p 80:80 clay/iqa:$TAG
+curl --request POST \
+  --url http://0.0.0.0:80/predict_images \
+  --header 'Content-Type: application/json' \
+  --data '{"images": [{"url": "https://assets.clay.earth/api/images/avatars/active/MzAwOTAtNTc3MDQyMjU2"}]}'
 ```
 
 # Ops
